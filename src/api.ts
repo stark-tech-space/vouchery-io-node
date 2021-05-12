@@ -185,8 +185,6 @@ export type RewardResponse = {
   updatedAt: string;
 };
 
-export type DeleteResponse = { status: number };
-
 export type QueryAllVouchersACampaign = {
   campaignId: number;
 };
@@ -255,18 +253,17 @@ export type GetRedemptionRequest = Voucher & {
   transactionId: string;
 };
 
-const turnCamelCaseIntoUnderLine = (input: { [key: string]: any }) => {
+const turnCamelCaseIntoUnderLine = (input: { [key: string]: any }): { [key: string]: any } => {
   const output = Object.entries(input).reduce((acc: { [key: string]: any }, [key, value]) => {
     //turn camelCase to camel_case
     const newKey = key.replace(/([A-Z])/g, '_$1').toLowerCase();
     acc[newKey] = value;
     return acc;
   }, {});
-  console.log(output);
   return output;
 };
 
-const turnUnderLineToCamelCase = (input: { [key: string]: any }) => {
+const turnUnderLineToCamelCase = (input: { [key: string]: any }): { [key: string]: any } => {
   const output = Object.entries(input).reduce((acc: { [key: string]: any }, [key, value]) => {
     const processKey = key
       .split('_')
@@ -330,20 +327,17 @@ export default class VoucheryIO {
 
       throw new Error(errorMsg);
     }
-    return method === 'DELETE'
-      ? { status: request.status }
-      : turnUnderLineToCamelCase(request.data);
+    return turnUnderLineToCamelCase(request.data);
   }
 
   async createMainCampaign(
     request: CreateMainCampaignRequest
   ): Promise<CreateMainCampaignResponse> {
     const requestBody = turnCamelCaseIntoUnderLine(request);
-    console.log('requestBody', requestBody);
     return this.apiRequest({
       url: '/campaigns',
       method: 'POST',
-      data: JSON.stringify(requestBody),
+      data: requestBody,
     });
   }
 
@@ -352,7 +346,7 @@ export default class VoucheryIO {
     return this.apiRequest({
       url: '/campaigns',
       method: 'POST',
-      data: JSON.stringify(requestBody),
+      data: requestBody,
     });
   }
 
@@ -362,11 +356,11 @@ export default class VoucheryIO {
     return this.apiRequest({
       url: `/campaigns/${id}`,
       method: 'PATCH',
-      data: JSON.stringify(requestBody),
+      data: requestBody,
     });
   }
 
-  async deleteCampaign({ id }: DeleteCampaignRequest): Promise<DeleteResponse> {
+  async deleteCampaign({ id }: DeleteCampaignRequest): Promise<{}> {
     return this.apiRequest({
       url: `/campaigns/${id}`,
       method: 'DELETE',
@@ -410,7 +404,7 @@ export default class VoucheryIO {
     });
   }
 
-  async deleteReward({ id }: RewardDeleteRequest): Promise<DeleteResponse> {
+  async deleteReward({ id }: RewardDeleteRequest): Promise<{}> {
     return this.apiRequest({
       url: `/rewards/${id}`,
       method: 'DELETE',
@@ -438,7 +432,7 @@ export default class VoucheryIO {
     });
   }
 
-  async deleteVoucher({ code }: DeleteVoucherRequest): Promise<DeleteResponse> {
+  async deleteVoucher({ code }: DeleteVoucherRequest): Promise<{}> {
     return this.apiRequest({
       url: `/vouchers/${code}`,
       method: 'DELETE',

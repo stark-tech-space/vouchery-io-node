@@ -1,6 +1,4 @@
 import dotenv from 'dotenv';
-dotenv.config({ path: '../.env' });
-
 import VoucheryIO, {
   CampaignType,
   CreateMainCampaignRequest,
@@ -17,9 +15,9 @@ const voucheryIO = new VoucheryIO({
   apiKey: process.env.VOUCHERY_IO_API_KEY || '',
 });
 
-describe('vouchery test', () => {
-  describe.skip('test main campaign', () => {
-    it.skip('should create a new main campaign', async () => {
+describe.skip('vouchery test', () => {
+  describe('test main campaign', () => {
+    it('should create a new main campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
         name: 'campaignName',
         type: CampaignType.MAIN,
@@ -31,7 +29,7 @@ describe('vouchery test', () => {
       expect(response).toHaveProperty('id');
     });
 
-    it.skip('should update a main campaign', async () => {
+    it('should update a main campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
         name: 'campaignUpdateName',
         type: CampaignType.MAIN,
@@ -61,7 +59,7 @@ describe('vouchery test', () => {
       expect(updateResponse.template).toBe(MainCampaignTemplate.GIFT_CARD);
     });
 
-    it.skip('should delete a main campaign', async () => {
+    it('should delete a main campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
         name: 'campaignDeleteName',
         type: CampaignType.MAIN,
@@ -74,12 +72,9 @@ describe('vouchery test', () => {
       expect(createResponse.type).toBe(CampaignType.MAIN);
 
       const deleteResponse = await voucheryIO.deleteCampaign({ id: createResponse.id });
-
-      expect(deleteResponse).toHaveProperty('status');
-      expect(deleteResponse.status).toBe(204);
     });
 
-    it.skip('should get correct campaign', async () => {
+    it('should get correct campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
         name: 'campaignQueryName',
         type: CampaignType.MAIN,
@@ -101,7 +96,7 @@ describe('vouchery test', () => {
     });
   });
 
-  describe.skip('test sub campaign', () => {
+  describe('test sub campaign', () => {
     const newCreateMainCampaign: CreateMainCampaignRequest = {
       name: 'campaignMainName',
       type: CampaignType.MAIN,
@@ -168,9 +163,6 @@ describe('vouchery test', () => {
 
     it('should delete sub campaign', async () => {
       const deleteSubResponse = await voucheryIO.deleteCampaign({ id: subCampaignId });
-
-      expect(deleteSubResponse).toHaveProperty('status');
-      expect(deleteSubResponse.status).toBe(204);
     });
   });
 });
