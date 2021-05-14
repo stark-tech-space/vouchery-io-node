@@ -1,6 +1,6 @@
-# api-package-template
+# Vouchery.io API Node Package
 
-API package template
+Vouchery.io API Node Package
 
 [Design Document](https://google.com)
 

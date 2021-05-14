@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import VoucheryIO, {
   CampaignType,
   CreateMainCampaignRequest,
@@ -6,20 +8,33 @@ import VoucheryIO, {
   CampaignStatus,
   UpdateCampaignRequest,
   CreateSubCampaignRequest,
+  SubCampaignTriggerOn,
+  SubCampaignTemplate,
 } from '../src/api';
 
-dotenv.config();
+import * as crypto from 'crypto';
 
 const voucheryIO = new VoucheryIO({
   url: process.env.VOUCHERY_IO_BASE_URL || '',
   apiKey: process.env.VOUCHERY_IO_API_KEY || '',
 });
 
-describe.skip('vouchery test', () => {
+describe('vouchery test', () => {
   describe('test main campaign', () => {
+    afterAll(async () => {
+      const allCampaigns = await voucheryIO.getAllCampaign();
+      console.log(allCampaigns);
+
+      await Promise.all(
+        Object.values(allCampaigns).map((campaign: any) =>
+          voucheryIO.deleteCampaign({ id: campaign.id }),
+        ),
+      );
+    });
+
     it('should create a new main campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
-        name: 'campaignName',
+        name: `campaignName-${crypto.randomInt(1000)}`,
         type: CampaignType.MAIN,
         template: MainCampaignTemplate.DISCOUNT,
         status: CampaignStatus.ACTIVE,
@@ -31,7 +46,7 @@ describe.skip('vouchery test', () => {
 
     it('should update a main campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
-        name: 'campaignUpdateName',
+        name: `campaignUpdateName-${crypto.randomInt(1000)}`,
         type: CampaignType.MAIN,
         template: MainCampaignTemplate.DISCOUNT,
         status: CampaignStatus.ACTIVE,
@@ -61,7 +76,7 @@ describe.skip('vouchery test', () => {
 
     it('should delete a main campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
-        name: 'campaignDeleteName',
+        name: `campaignDeleteName--${crypto.randomInt(1000)}`,
         type: CampaignType.MAIN,
         template: MainCampaignTemplate.DISCOUNT,
         status: CampaignStatus.ACTIVE,
@@ -76,7 +91,7 @@ describe.skip('vouchery test', () => {
 
     it('should get correct campaign', async () => {
       const newCreateMainCampaign: CreateMainCampaignRequest = {
-        name: 'campaignQueryName',
+        name: `campaignQueryName-${crypto.randomInt(1000)}`,
         type: CampaignType.MAIN,
         template: MainCampaignTemplate.DISCOUNT,
         status: CampaignStatus.ACTIVE,
@@ -98,15 +113,19 @@ describe.skip('vouchery test', () => {
 
   describe('test sub campaign', () => {
     const newCreateMainCampaign: CreateMainCampaignRequest = {
-      name: 'campaignMainName',
+      name: `campaignMainName-${crypto.randomInt(1000)}`,
       type: CampaignType.MAIN,
       template: MainCampaignTemplate.DISCOUNT,
       status: CampaignStatus.ACTIVE,
     };
 
-    const newCreateSubCampaign: CreateSubCampaignRequest = {
+    let newCreateSubCampaign: CreateSubCampaignRequest = {
       type: CampaignType.SUB,
-      name: 'subCampaignName',
+      name: `subCampaignName-${crypto.randomInt(1000)}`,
+      triggersOn: SubCampaignTriggerOn.REDEMPTION,
+      triggerName: `subCampaignTrigger-${crypto.randomInt(1000)}`,
+      template: SubCampaignTemplate.SUB_REDEMPTION,
+      status: CampaignStatus.ACTIVE,
       parentId: -1,
       maxRedemptions: 10,
     };

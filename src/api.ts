@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosPromise, AxiosResponse, AxiosInstance } from 'axios';
+import axios, { AxiosResponse, AxiosInstance } from 'axios';
 
 interface IConstructor {
   url: string;
@@ -18,10 +18,10 @@ export enum CampaignType {
 }
 
 export enum CampaignStatus {
-  DRAFT = 'DRAFT',
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  ARCHIVED = 'ARCHIVED',
+  DRAFT = 'draft',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  ARCHIVED = 'archived',
 }
 
 export enum SubCampaignTriggerOn {
@@ -279,6 +279,7 @@ const turnUnderLineToCamelCase = (input: { [key: string]: any }): { [key: string
 export default class VoucheryIO {
   client: AxiosInstance;
   constructor({ url, apiKey, timeout = 10 * 1000 }: IConstructor) {
+    console.log('apiKey', apiKey);
     this.client = axios.create({
       baseURL: url,
       headers: {
@@ -301,7 +302,7 @@ export default class VoucheryIO {
               url,
               method,
               data,
-            }
+            },
       );
     } catch (error) {
       let errorMsg: string;
@@ -330,8 +331,16 @@ export default class VoucheryIO {
     return turnUnderLineToCamelCase(request.data);
   }
 
+  async getAllCampaign() {
+    return this.apiRequest({
+      url: '/campaigns',
+      method: 'GET',
+      data: null,
+    });
+  }
+
   async createMainCampaign(
-    request: CreateMainCampaignRequest
+    request: CreateMainCampaignRequest,
   ): Promise<CreateMainCampaignResponse> {
     const requestBody = turnCamelCaseIntoUnderLine(request);
     return this.apiRequest({
