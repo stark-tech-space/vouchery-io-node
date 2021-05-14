@@ -24,4 +24,5 @@ jobs:
       - name: Run Tests
         run: npm test
         env:
-          API_KEY: ${{ secrets.API_KEY }}
+          VOUCHERY_IO_API_KEY: ${{ secrets.VOUCHERY_IO_API_KEY }}
+          VOUCHERY_IO_BASE_URL: ${{ secrets.VOUCHERY_IO_BASE_URL }}
