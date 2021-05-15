@@ -26,9 +26,20 @@ describe('vouchery test', () => {
       console.log(allCampaigns);
 
       await Promise.all(
-        Object.values(allCampaigns).map((campaign: any) =>
-          voucheryIO.deleteCampaign({ id: campaign.id }),
-        ),
+        Object.values(allCampaigns).map((campaign: any) => {
+          return new Promise(async (resolve, reject) => {
+            console.log(
+              await Promise.all(
+                campaign.children.map((subCampaign: any) =>
+                  voucheryIO.deleteCampaign({ id: subCampaign.id }),
+                ),
+              ),
+            );
+            // await voucheryIo.deleteCampaign({ id: campaign.id });
+
+            resolve(null);
+          });
+        }),
       );
     });
 

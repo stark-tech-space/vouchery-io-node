@@ -169,7 +169,10 @@ export type RewardGiftRequest = {
   productIdentifier?: string;
 };
 
-export type RewardRequest = { campaignId: number } & (RewardSetDiscountRequest | RewardGiftRequest);
+export type RewardRequest = {
+  campaignId: number;
+  type: RewardActionType;
+} & (RewardSetDiscountRequest | RewardGiftRequest);
 
 export type RewardUpdateRequest = { id: number } & (RewardSetDiscountRequest | RewardGiftRequest);
 
