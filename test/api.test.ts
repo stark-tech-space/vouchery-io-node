@@ -23,24 +23,43 @@ describe('vouchery test', () => {
   describe('test main campaign', () => {
     afterAll(async () => {
       const allCampaigns = await voucheryIO.getAllCampaign();
-      console.log(allCampaigns);
 
-      await Promise.all(
-        Object.values(allCampaigns).map((campaign: any) => {
-          return new Promise(async (resolve, reject) => {
-            console.log(
-              await Promise.all(
-                campaign.children.map((subCampaign: any) =>
-                  voucheryIO.deleteCampaign({ id: subCampaign.id }),
-                ),
-              ),
-            );
-            // await voucheryIo.deleteCampaign({ id: campaign.id });
-
-            resolve(null);
+      const campaigns: any = Object.values(allCampaigns);
+      for (const campaign of campaigns) {
+        const children = campaign.children;
+        for (const subCampaign of children) {
+          const rewards = await voucheryIO.allRewardsInCampaign({
+            campaignId: subCampaign.id,
           });
-        }),
-      );
+          await Promise.all(
+            Object.values(rewards).map((reward) => voucheryIO.deleteReward({ id: reward.id })),
+          );
+
+          // wait 1 second
+          await new Promise<null>((resolve, reject) => {
+            setTimeout(() => {
+              resolve(null);
+            }, 1 * 1000);
+          });
+
+          await voucheryIO.deleteCampaign({ id: subCampaign.id });
+
+          // wait 1 second
+          await new Promise<null>((resolve, reject) => {
+            setTimeout(() => {
+              resolve(null);
+            }, 1 * 1000);
+          });
+        }
+        await voucheryIO.deleteCampaign({ id: campaign.id });
+
+        // wait 1 second
+        await new Promise<null>((resolve, reject) => {
+          setTimeout(() => {
+            resolve(null);
+          }, 1 * 1000);
+        });
+      }
     });
 
     it('should create a new main campaign', async () => {
@@ -145,13 +164,47 @@ describe('vouchery test', () => {
 
     beforeAll(async () => {
       const response = await voucheryIO.createMainCampaign(newCreateMainCampaign);
-      console.log('create main campaign', response.id);
       mainCampaignId = response.id;
       newCreateSubCampaign.parentId = mainCampaignId;
     });
 
     afterAll(async () => {
-      const deleteMainResponse = await voucheryIO.deleteCampaign({ id: mainCampaignId });
+      const allCampaigns = await voucheryIO.getAllCampaign();
+
+      const campaigns: any = Object.values(allCampaigns);
+      for (const campaign of campaigns) {
+        const children = campaign.children;
+        for (const subCampaign of children) {
+          const rewards = await voucheryIO.allRewardsInCampaign({
+            campaignId: subCampaign.id,
+          });
+          await Promise.all(rewards.map((reward) => voucheryIO.deleteReward({ id: reward.id })));
+
+          // wait 1 second
+          await new Promise<null>((resolve, reject) => {
+            setTimeout(() => {
+              resolve(null);
+            }, 1 * 1000);
+          });
+
+          await voucheryIO.deleteCampaign({ id: subCampaign.id });
+
+          // wait 1 second
+          await new Promise<null>((resolve, reject) => {
+            setTimeout(() => {
+              resolve(null);
+            }, 1 * 1000);
+          });
+        }
+        await voucheryIO.deleteCampaign({ id: campaign.id });
+
+        // wait 1 second
+        await new Promise<null>((resolve, reject) => {
+          setTimeout(() => {
+            resolve(null);
+          }, 1 * 1000);
+        });
+      }
     });
 
     it('should create a new sub campaign', async () => {

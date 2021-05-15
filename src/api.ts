@@ -155,6 +155,7 @@ export type QueryAllRewardsACampaign = {
 };
 
 export type RewardSetDiscountRequest = {
+  type: RewardActionType;
   title?: string;
   description?: string;
   discountType: RewardDiscountType;
@@ -162,6 +163,7 @@ export type RewardSetDiscountRequest = {
 };
 
 export type RewardGiftRequest = {
+  type: RewardActionType;
   name: string;
   sku: string;
   quantity: number;
@@ -171,7 +173,6 @@ export type RewardGiftRequest = {
 
 export type RewardRequest = {
   campaignId: number;
-  type: RewardActionType;
 } & (RewardSetDiscountRequest | RewardGiftRequest);
 
 export type RewardUpdateRequest = { id: number } & (RewardSetDiscountRequest | RewardGiftRequest);
