@@ -248,4 +248,10 @@ describe('vouchery test', () => {
       const deleteSubResponse = await voucheryIO.deleteCampaign({ id: subCampaignId });
     });
   });
+
+  describe('test reward', () => {
+    test('should works', () => {
+      expect(true).toBeTruthy();
+    });
+  });
 });
