@@ -257,6 +257,10 @@ export type GetRedemptionRequest = Voucher & {
   transactionId: string;
 };
 
+export type DeleteRedemptionRequest = Voucher & {
+  transactionId: string;
+};
+
 const turnCamelCaseIntoUnderLine = (input: { [key: string]: any }): { [key: string]: any } => {
   const output = Object.entries(input).reduce((acc: { [key: string]: any }, [key, value]) => {
     //turn camelCase to camel_case
@@ -488,6 +492,14 @@ export default class VoucheryIO {
       url: `/vouchers/${code}/redemptions`,
       method: 'GET',
       data: requestBody,
+    });
+  }
+
+  async deleteRedemption({ code, transactionId }: DeleteRedemptionRequest): Promise<{}> {
+    return this.apiRequest({
+      url: `/vouchers/${code}/redemptions?transaction_id=${transactionId}`,
+      method: 'DELETE',
+      data: {},
     });
   }
 }
