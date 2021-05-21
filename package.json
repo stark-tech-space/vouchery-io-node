@@ -10,11 +10,11 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublishOnly": "npm run build",
-    "test": "npx jest"
+    "test": "npx jest --forceExit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stark-tech-space/api-package-template.git"
+    "url": "git+https://github.com/stark-tech-space/vouchery-io-node.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@stark-tech-space"
@@ -23,9 +23,9 @@
   "author": "@stark-tech-space",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/stark-tech-space/api-package-template/issues"
+    "url": "https://github.com/stark-tech-space/vouchery-io-node/issues"
   },
-  "homepage": "https://github.com/stark-tech-space/api-package-template#readme",
+  "homepage": "https://github.com/stark-tech-space/vouchery-io-node#readme",
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "dotenv": "^9.0.2",

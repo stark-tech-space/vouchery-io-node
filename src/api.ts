@@ -72,6 +72,11 @@ export enum VoucherStatus {
   ACTIVE = 'active',
 }
 
+export enum RuleType {
+  CustomerMaxRedemptions = 'CustomerMaxRedemptions',
+  Timeframe = 'Timeframe',
+}
+
 export type UpdatedInfo = {
   name: string;
   email: string;
@@ -259,6 +264,23 @@ export type GetRedemptionRequest = Voucher & {
 
 export type DeleteRedemptionRequest = Voucher & {
   transactionId: string;
+};
+
+export type CreateRuleRequest = {
+  campaignId: number;
+  type: RuleType;
+  maxRedemptions?: number;
+  startTime?: string;
+  endTime?: string;
+  timeZone?: string;
+};
+
+export type RuleResponse = {
+  id: number;
+  type: RuleType;
+  campaignId: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 const turnCamelCaseIntoUnderLine = (input: { [key: string]: any }): { [key: string]: any } => {
@@ -498,6 +520,33 @@ export default class VoucheryIO {
   async deleteRedemption({ code, transactionId }: DeleteRedemptionRequest): Promise<{}> {
     return this.apiRequest({
       url: `/vouchers/${code}/redemptions?transaction_id=${transactionId}`,
+      method: 'DELETE',
+      data: {},
+    });
+  }
+
+  async createRule(request: CreateRuleRequest): Promise<RuleResponse> {
+    const { campaignId, ...restRequest } = request;
+    const requestBody = turnCamelCaseIntoUnderLine(restRequest);
+
+    return this.apiRequest({
+      url: `/campaigns/${campaignId}/rules`,
+      method: 'POST',
+      data: requestBody,
+    });
+  }
+
+  async getRules({ id }: { id: number }): Promise<RuleResponse> {
+    return this.apiRequest({
+      url: `/rules/${id}`,
+      method: 'GET',
+      data: {},
+    });
+  }
+
+  async deleteRule({ id }: { id: number }): Promise<{}> {
+    return this.apiRequest({
+      url: `/rules/${id}`,
       method: 'DELETE',
       data: {},
     });
