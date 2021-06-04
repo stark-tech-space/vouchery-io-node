@@ -644,4 +644,16 @@ export default class VoucheryIO {
       data: {},
     });
   }
+
+  async unassignVouchers(input: { customerId: string; voucherCodes: string[] }) {
+    const { customerId, voucherCodes } = input;
+
+    return this.apiRequest({
+      url: `/customers/${customerId}/vouchers`,
+      method: 'DELETE',
+      data: {
+        vouchers: voucherCodes,
+      },
+    });
+  }
 }
