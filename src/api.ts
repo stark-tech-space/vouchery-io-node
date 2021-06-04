@@ -613,8 +613,8 @@ export default class VoucheryIO {
   }
 
   async updateCustomer(request: CreateCustomerRequest): Promise<CustomerResponse> {
-    const { identifier, ...restRequest } = request;
-    const requestBody = turnCamelCaseIntoUnderLine(restRequest);
+    const { identifier } = request;
+    const requestBody = turnCamelCaseIntoUnderLine(request);
 
     return this.apiRequest({
       url: `/customers/${identifier}`,
@@ -623,7 +623,7 @@ export default class VoucheryIO {
     });
   }
 
-  async deleteCustomer({ id }: { id: number }): Promise<{}> {
+  async deleteCustomer({ id }: { id: string }): Promise<{}> {
     return this.apiRequest({
       url: `/customers/${id}`,
       method: 'DELETE',
@@ -634,7 +634,7 @@ export default class VoucheryIO {
   async allVouchersAssignedToCustomer({
     customerId,
   }: {
-    customerId: number;
+    customerId: string;
   }): Promise<CustomerVoucherResponse[]> {
     return this.apiRequest({
       url: `/customers/${customerId}/vouchers`,
