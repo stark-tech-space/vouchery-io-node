@@ -279,8 +279,42 @@ export type RuleResponse = {
   id: number;
   type: RuleType;
   campaignId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateCustomerRequest = {
+  identifier: string;
+  name?: string;
+  email?: string;
+  loyaltyPoints?: string;
+  categories?: { [key: string]: any }[];
+  metadata?: { [key: string]: any };
+};
+
+export type CustomerResponse = {
+  identifier: string;
+  name?: string;
+  email?: string;
+  loyaltyPoints?: string;
+  categories: {
+    name: string;
+    tag: string;
+  }[];
+  metadata?: { [key: string]: any };
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type CustomerVoucherResponse = {
+  type: string;
+  campaignId: number;
+  active: boolean;
+  status: string;
+  code: string;
+  customerIdentifier: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 const turnCamelCaseIntoUnderLine = (input: { [key: string]: any }): { [key: string]: any } => {
@@ -548,6 +582,63 @@ export default class VoucheryIO {
     return this.apiRequest({
       url: `/rules/${id}`,
       method: 'DELETE',
+      data: {},
+    });
+  }
+
+  async createCustomer(request: CreateCustomerRequest): Promise<CustomerResponse> {
+    const requestBody = turnCamelCaseIntoUnderLine(request);
+
+    return this.apiRequest({
+      url: `/customers`,
+      method: 'POST',
+      data: requestBody,
+    });
+  }
+
+  async getCustomers(): Promise<CustomerResponse[]> {
+    return this.apiRequest({
+      url: `/customers`,
+      method: 'GET',
+      data: {},
+    });
+  }
+
+  async getCustomer({ identifier }: { identifier: number }): Promise<CustomerResponse> {
+    return this.apiRequest({
+      url: `/customers/${identifier}`,
+      method: 'GET',
+      data: {},
+    });
+  }
+
+  async updateCustomer(request: CreateCustomerRequest): Promise<CustomerResponse> {
+    const { identifier, ...restRequest } = request;
+    const requestBody = turnCamelCaseIntoUnderLine(restRequest);
+
+    return this.apiRequest({
+      url: `/customers/${identifier}`,
+      method: 'PATCH',
+      data: requestBody,
+    });
+  }
+
+  async deleteCustomer({ id }: { id: number }): Promise<{}> {
+    return this.apiRequest({
+      url: `/customers/${id}`,
+      method: 'DELETE',
+      data: {},
+    });
+  }
+
+  async allVouchersAssignedToCustomer({
+    customerId,
+  }: {
+    customerId: number;
+  }): Promise<CustomerVoucherResponse[]> {
+    return this.apiRequest({
+      url: `/customers/${customerId}/vouchers`,
+      method: 'GET',
       data: {},
     });
   }
