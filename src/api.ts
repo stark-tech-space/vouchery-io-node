@@ -318,26 +318,28 @@ export type CustomerVoucherResponse = {
 };
 
 const turnCamelCaseIntoUnderLine = (input: { [key: string]: any }): { [key: string]: any } => {
-  const output = Object.entries(input).reduce((acc: { [key: string]: any }, [key, value]) => {
+  return Object.entries(input).reduce((acc: { [key: string]: any }, [key, value]) => {
     //turn camelCase to camel_case
     const newKey = key.replace(/([A-Z])/g, '_$1').toLowerCase();
-    acc[newKey] = value;
+    acc[newKey] = value && typeof value === 'object' ? turnCamelCaseIntoUnderLine(value) : value;
     return acc;
   }, {});
-  return output;
 };
 
 const turnUnderLineToCamelCase = (input: { [key: string]: any }): { [key: string]: any } => {
-  const output = Object.entries(input).reduce((acc: { [key: string]: any }, [key, value]) => {
+  if (Array.isArray(input)) {
+    return input.map((e) => turnUnderLineToCamelCase(e));
+  }
+
+  return Object.entries(input).reduce((acc: { [key: string]: any }, [key, value]) => {
     const processKey = key
       .split('_')
       .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
       .join('');
     const newKey = processKey.charAt(0).toLowerCase() + processKey.slice(1);
-    acc[newKey] = value;
+    acc[newKey] = value && typeof value === 'object' ? turnUnderLineToCamelCase(value) : value;
     return acc;
   }, {});
-  return output;
 };
 
 export default class VoucheryIO {
